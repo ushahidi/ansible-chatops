@@ -1,0 +1,15 @@
+---
+# handlers file for ushahidi.chatops
+- name: "Report to Chatops"
+  slack:
+    token: "{{ slack_token }}"
+    channel: "#github-platform"
+    username: "Ansible on {{ inventory_hostname }}"
+    msg: >
+      Deployed {{ play_name }} to {{ play_hosts|join(', ') }}
+      {{ 'at %s' % github_deployment_env_url if github_deployment_env_url is defined else '' }}
+      {{ '(logs at %s )' % github_deployment_log_url if github_deployment_log_url is defined else '' }}
+    icon_emoji: ship
+    color: good
+  when: ENVIRONMENT is defined and ENVIRONMENT != 'local'
+  run_once: true

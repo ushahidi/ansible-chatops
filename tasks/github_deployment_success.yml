@@ -1,0 +1,21 @@
+---
+# This is actually invoked from a handler
+#   see: https://github.com/ansible/ansible/issues/14270
+#
+- name: Set deployment object to success
+  command: >+
+    curl -X POST \
+      -H "Authorization: token {{ GITHUB_STATUS_TOKEN }}" \
+      -H "Accept: application/vnd.github.ant-man-preview+json" \
+      -H "Content-type: application/json" -d '
+         {
+           "state" : "success",
+           {{ '"log_url": "%s",' % github_deployment_log_url if github_deployment_log_url is defined }}
+           "environment_url" : "{{ github_deployment_env_url }}",
+           "auto_inactive": false
+         }' \
+      {{ github_deployment_statuses_url }}
+  when: ENVIRONMENT != 'local' and github_deployment_statuses_url
+  run_once: true
+  ignore_errors: yes
+  delegate_to: 127.0.0.1

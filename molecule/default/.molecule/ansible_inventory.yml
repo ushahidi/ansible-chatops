@@ -1,0 +1,11 @@
+# Molecule managed
+
+---
+all:
+  hosts:
+    localhost-default: &id001
+      ansible_connection: local
+ungrouped:
+  hosts:
+    localhost-default: *id001
+  vars: {}

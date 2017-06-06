@@ -1,0 +1,18 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: static
+  options:
+    ansible_connection_options:
+      ansible_connection: local
+lint:
+  name: ansible-lint
+platforms:
+  - name: localhost
+provisioner:
+  name: ansible
+scenario:
+  name: default
+verifier:
+  name: testinfra

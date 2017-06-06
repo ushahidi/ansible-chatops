@@ -1,0 +1,40 @@
+---
+- block:
+  - name: Create deployment object
+    command: >+
+      curl -X POST \
+        -H "Authorization: token {{ GITHUB_STATUS_TOKEN }}" \
+        -H "Content-type: application/json" -d '
+           {
+             "ref" : "{{ github_commit }}",
+             "task" : "deploy",
+             "required_contexts": [],
+             "environment": "{{ ENVIRONMENT | default('staging') }}",
+             "auto_merge": false
+           }' \
+        https://api.github.com/repos/{{ github_repo_owner }}/{{ github_repo_name }}/deployments
+    when: ENVIRONMENT != 'local' and github_statuses_enabled
+    register: github_deployment_rc
+
+  - name: Extract deployment statuses url
+    set_fact: github_deployment_statuses_url="{{ (github_deployment_rc.stdout | from_json)['statuses_url'] | default(false) }}"
+
+  - name: Set deployment object to pending
+    command: >+
+      curl -X POST \
+        -H "Authorization: token {{ GITHUB_STATUS_TOKEN }}" \
+        -H "Accept: application/vnd.github.ant-man-preview+json" \
+        -H "Content-type: application/json" -d '
+           {
+             "state" : "pending"
+           }' \
+        {{ github_deployment_statuses_url }}
+    when: ENVIRONMENT != 'local' and github_deployment_statuses_url
+    ignore_errors: yes
+
+  rescue:
+    - set_fact: github_deployment_statuses_url=false
+    - debug: msg="Github deployment creation failed"
+
+  run_once: true
+  delegate_to: 127.0.0.1
