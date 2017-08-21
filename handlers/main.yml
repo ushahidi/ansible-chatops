@@ -3,7 +3,7 @@
 - name: "Report to Chatops"
   slack:
     token: "{{ slack_token }}"
-    channel: "#github-platform"
+    channel: "{{ slack_channel }}"
     username: "Ansible on {{ inventory_hostname }}"
     msg: >
       Deployed {{ play_name }} to {{ play_hosts|join(', ') }}
@@ -11,5 +11,5 @@
       {{ '(logs at %s )' % github_deployment_log_url if github_deployment_log_url is defined else '' }}
     icon_emoji: ship
     color: good
-  when: ENVIRONMENT is defined and ENVIRONMENT != 'local'
+  when: ENVIRONMENT is defined and ENVIRONMENT != 'local' and slack_token is defined and slack_channel is defined
   run_once: true
