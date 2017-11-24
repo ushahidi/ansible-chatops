@@ -7,8 +7,10 @@ lint:
   name: yamllint
   enabled: false
 platforms:
-  - name: ansible_chatops
+  - name: ansible_chatops_trusty
     image: ubuntu:trusty
+  - name: ansible_chatops_xenial
+    image: ubuntu:xenial
 provisioner:
   name: ansible
   lint:
