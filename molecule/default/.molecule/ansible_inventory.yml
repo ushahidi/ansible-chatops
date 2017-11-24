@@ -3,9 +3,9 @@
 ---
 all:
   hosts:
-    localhost-default: &id001
-      ansible_connection: local
+    ansible_chatops: &id001
+      ansible_connection: docker
 ungrouped:
   hosts:
-    localhost-default: *id001
+    ansible_chatops: *id001
   vars: {}

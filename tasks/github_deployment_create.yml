@@ -30,11 +30,13 @@
            }' \
         {{ github_deployment_statuses_url }}
     when: ENVIRONMENT != 'local' and github_deployment_statuses_url
-    ignore_errors: yes
+    ignore_errors: true
 
   rescue:
-    - set_fact: github_deployment_statuses_url=false
-    - debug: msg="Github deployment creation failed"
+    - name: set statuses url to false default
+      set_fact: github_deployment_statuses_url=false
+    - name: report failure
+      debug: msg="Github deployment creation failed"
 
   run_once: true
   delegate_to: 127.0.0.1

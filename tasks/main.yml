@@ -1,13 +1,14 @@
 ---
 - name: "Trigger chatops handler"
   debug: msg="Trigger chatops handler"
-  changed_when: True
+  changed_when: true
   notify: "Report to Chatops"
   run_once: true
 
 
 # github statuses disabled by default
-- set_fact: github_statuses_enabled=false
+- name: set default for github statuses to disabled
+  set_fact: github_statuses_enabled=false
 
 - name: Check required variables to report commit statuses to GitHub
   set_fact: github_statuses_enabled=true
@@ -19,13 +20,13 @@
     - GITHUB_STATUS_TOKEN is defined and GITHUB_STATUS_TOKEN
 
 - block:
-  - include: github_deployment_create.yml
+  - include_tasks: github_deployment_create.yml
 
   # Trigger github status report
-  - include: github_status_report.yml
+  - include_tasks: github_status_report.yml
 
   # Trigger github deployment report
-  - include: github_deployment_success.yml
+  - include_tasks: github_deployment_success.yml
 
   run_once: true
   when: github_statuses_enabled

@@ -16,5 +16,5 @@
 
   when: ENVIRONMENT != 'local' and github_statuses_enabled
   run_once: true
-  ignore_errors: yes
+  ignore_errors: true
   delegate_to: 127.0.0.1
